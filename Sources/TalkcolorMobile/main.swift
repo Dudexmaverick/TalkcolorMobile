@@ -8,13 +8,11 @@ let status = Application.run(startupHandler: nil) { app in
     window.title = "Talkcolor — Minha voz, minhas cores"
     window.setDefaultSize(width: 600, height: 500)
 
-    // Organização vertical
+    // Organização principal
     let layout = BoxRef(
         orientation: .vertical,
         spacing: 12
     )
-
-    
 
     // Cabeçalho
     let title = LabelRef(str: "💜 TALKCOLOR")
@@ -30,12 +28,12 @@ let status = Application.run(startupHandler: nil) { app in
     )
     layout.append(child: instruction)
 
-    // Mensagem exibida ao selecionar um botão
+    // Área da mensagem selecionada
     let result = LabelRef(
         str: "Escolha uma mensagem"
     )
 
-    // Botões de comunicação
+    // Mensagens disponíveis
     let messages: [(String, String)] = [
         ("🍎 Estou com fome", "Estou com fome"),
         ("💧 Estou com sede", "Estou com sede"),
@@ -43,24 +41,53 @@ let status = Application.run(startupHandler: nil) { app in
         ("❤️ Preciso de ajuda", "Preciso de ajuda")
     ]
 
-  for (buttonTitle, message) in messages {
-    let button = ButtonRef(label: buttonTitle)
+    // Contêiner dos botões
+    let buttonGrid = BoxRef(
+        orientation: .vertical,
+        spacing: 12
+    )
 
-    button.onClicked { _ in
-        message.withCString { text in
-            result.setText(str: text)
+    // Criar duas colunas
+    for rowStart in stride(
+        from: 0,
+        to: messages.count,
+        by: 2
+    ) {
+
+        let row = BoxRef(
+            orientation: .horizontal,
+            spacing: 12
+        )
+
+        for index in rowStart..<min(rowStart + 2, messages.count) {
+
+            let (buttonTitle, message) = messages[index]
+
+            let button = ButtonRef(label: buttonTitle)
+
+            button.onClicked { _ in
+                message.withCString { text in
+                    result.setText(str: text)
+                }
+
+                print("Mensagem selecionada: \(message)")
+            }
+
+            row.append(child: button)
         }
 
-        print("Mensagem selecionada: \(message)")
+        buttonGrid.append(child: row)
     }
 
-    layout.append(child: button)
-}
+    // Adicionar os botões à janela
+    layout.append(child: buttonGrid)
 
-layout.append(child: result)
+    // Exibir mensagem selecionada
+    layout.append(child: result)
 
-window.set(child: layout)
-window.set(visible: true)
+    // Mostrar janela
+    window.set(child: layout)
+    window.set(visible: true)
 }
 
 print("Talkcolor encerrado com status: \(String(describing: status))")
