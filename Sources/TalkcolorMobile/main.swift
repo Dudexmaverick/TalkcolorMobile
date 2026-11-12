@@ -43,23 +43,24 @@ let status = Application.run(startupHandler: nil) { app in
         ("❤️ Preciso de ajuda", "Preciso de ajuda")
     ]
 
-    for (buttonTitle, message) in messages {
+  for (buttonTitle, message) in messages {
+    let button = ButtonRef(label: buttonTitle)
 
-        let button = ButtonRef(label: buttonTitle)
-
-        button.onClicked { _ in
-            result.set(name: message)
-            print("Mensagem selecionada: \(message)")
+    button.onClicked { _ in
+        message.withCString { text in
+            result.setText(str: text)
         }
 
-        layout.append(child: button)
+        print("Mensagem selecionada: \(message)")
     }
 
-    // Exibir resultado
-    layout.append(child: result)
+    layout.append(child: button)
+}
 
-    window.set(child: layout)
-    window.set(visible: true)
+layout.append(child: result)
+
+window.set(child: layout)
+window.set(visible: true)
 }
 
 print("Talkcolor encerrado com status: \(String(describing: status))")
