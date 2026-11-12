@@ -1,0 +1,35 @@
+button.fome {
+    background: #FFE0C2;
+    color: #30243F;
+    border-radius: 18px;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+button.sede {
+    background: #D6ECFF;
+    color: #30243F;
+    border-radius: 18px;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+button.banheiro {
+    background: #E8D8FA;
+    color: #30243F;
+    border-radius: 18px;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+button.ajuda {
+    background: #FFD7DD;
+    color: #30243F;
+    border-radius: 18px;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+button:hover {
+    opacity: 0.9;
+}
