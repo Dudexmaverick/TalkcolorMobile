@@ -48,7 +48,7 @@ button .talkcolor-emoji {
     font-weight: normal;
 }
 
-/* Texto dos botões */
+/* Textos dos botões */
 
 button .talkcolor-button-text {
     font-size: 17px;
@@ -56,7 +56,7 @@ button .talkcolor-button-text {
     color: #30243F;
 }
 
-/* Efeitos de interação */
+/* Interações */
 
 button.fome:hover,
 button.sede:hover,
@@ -85,7 +85,7 @@ button:active {
     margin-top: 12px;
 }
 
-/* Título do cartão */
+/* Título */
 
 .talkcolor-result-heading {
     color: #786B88;
@@ -93,13 +93,13 @@ button:active {
     font-weight: bold;
 }
 
-/* Emoji da mensagem selecionada */
+/* Emoji selecionado */
 
 .talkcolor-result-emoji {
     font-size: 48px;
 }
 
-/* Texto da mensagem selecionada */
+/* Texto selecionado */
 
 .talkcolor-result-text {
     color: #30243F;
