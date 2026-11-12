@@ -2,15 +2,42 @@
 import Gtk
 import Foundation
 
+// MARK: - Comunicação por voz
+
+func falarMensagem(_ mensagem: String) {
+    let processo = Process()
+
+    processo.executableURL = URL(
+        fileURLWithPath: "/usr/bin/spd-say"
+    )
+
+    processo.arguments = [
+        "-l",
+        "pt-BR",
+        mensagem
+    ]
+
+    do {
+        try processo.run()
+        print("🔊 Reproduzindo: \(mensagem)")
+    } catch {
+        print("Erro ao reproduzir voz: \(error)")
+    }
+}
+
 // MARK: - Estilos do Talkcolor
 
 let cssProvider = CssProvider()
 let cssPath = FileManager.default.currentDirectoryPath + "/talkcolor.css"
 
-if let css = try? String(contentsOfFile: cssPath, encoding: .utf8) {
+if let css = try? String(
+    contentsOfFile: cssPath,
+    encoding: .utf8
+) {
     css.withCString { data in
         cssProvider.load(from: data, length: -1)
     }
+
     print("CSS carregado com sucesso!")
 } else {
     print("Não foi possível carregar o CSS: \(cssPath)")
@@ -23,7 +50,7 @@ let status = Application.run(startupHandler: nil) { app in
     // Janela principal
     let window = ApplicationWindowRef(application: app)
     window.title = "Talkcolor — Minha voz, minhas cores"
-    window.setDefaultSize(width: 600, height: 500)
+    window.setDefaultSize(width: 600, height: 600)
 
     // Organização principal
     let layout = BoxRef(
@@ -35,7 +62,9 @@ let status = Application.run(startupHandler: nil) { app in
     let title = LabelRef(str: "💜 TALKCOLOR")
     layout.append(child: title)
 
-    let subtitle = LabelRef(str: "Minha voz, minhas cores")
+    let subtitle = LabelRef(
+        str: "Minha voz, minhas cores"
+    )
     layout.append(child: subtitle)
 
     let instruction = LabelRef(
@@ -43,10 +72,46 @@ let status = Application.run(startupHandler: nil) { app in
     )
     layout.append(child: instruction)
 
-    // Área da mensagem selecionada
-    let result = LabelRef(str: "Escolha uma mensagem")
+    // MARK: - Cartão de comunicação
 
-    // Mensagens disponíveis
+    let resultCard = BoxRef(
+        orientation: .vertical,
+        spacing: 10
+    )
+
+    let resultHeading = LabelRef(
+        str: "MENSAGEM SELECIONADA"
+    )
+
+    let resultEmoji = LabelRef(str: "💬")
+
+    let result = LabelRef(
+        str: "Escolha uma mensagem"
+    )
+
+    // Classes CSS do cartão
+    "talkcolor-result-card".withCString { name in
+        resultCard.add(cssClass: name)
+    }
+
+    "talkcolor-result-heading".withCString { name in
+        resultHeading.add(cssClass: name)
+    }
+
+    "talkcolor-result-emoji".withCString { name in
+        resultEmoji.add(cssClass: name)
+    }
+
+    "talkcolor-result-text".withCString { name in
+        result.add(cssClass: name)
+    }
+
+    resultCard.append(child: resultHeading)
+    resultCard.append(child: resultEmoji)
+    resultCard.append(child: result)
+
+    // MARK: - Mensagens disponíveis
+
     let messages: [(String, String)] = [
         ("🍎 Estou com fome", "Estou com fome"),
         ("💧 Estou com sede", "Estou com sede"),
@@ -54,7 +119,6 @@ let status = Application.run(startupHandler: nil) { app in
         ("❤️ Preciso de ajuda", "Preciso de ajuda")
     ]
 
-    // Classes CSS correspondentes às mensagens
     let cssClasses = [
         "fome",
         "sede",
@@ -62,13 +126,27 @@ let status = Application.run(startupHandler: nil) { app in
         "ajuda"
     ]
 
-    // Contêiner dos botões
+    let emojis = [
+        "🍎",
+        "💧",
+        "🚻",
+        "❤️"
+    ]
+
+    let buttonLabels = [
+        "Estou com fome",
+        "Estou com sede",
+        "Ir ao banheiro",
+        "Preciso de ajuda"
+    ]
+
+    // MARK: - Grade de botões
+
     let buttonGrid = BoxRef(
         orientation: .vertical,
         spacing: 12
     )
 
-    // Criar duas colunas
     for rowStart in stride(
         from: 0,
         to: messages.count,
@@ -85,23 +163,51 @@ let status = Application.run(startupHandler: nil) { app in
 
         for index in rowStart..<min(rowStart + 2, messages.count) {
 
-            let (buttonTitle, message) = messages[index]
+            let (_, message) = messages[index]
 
             // Criar botão
-            let button = ButtonRef(label: buttonTitle)
+            let button = ButtonRef(label: "")
 
-            // Dimensões e expansão
+            // Conteúdo visual
+            let buttonContent = BoxRef(
+                orientation: .vertical,
+                spacing: 8
+            )
+
+            let emoji = LabelRef(
+                str: emojis[index]
+            )
+
+            let buttonText = LabelRef(
+                str: buttonLabels[index]
+            )
+
+            "talkcolor-emoji".withCString { name in
+                emoji.add(cssClass: name)
+            }
+
+            "talkcolor-button-text".withCString { name in
+                buttonText.add(cssClass: name)
+            }
+
+            buttonContent.append(child: emoji)
+            buttonContent.append(child: buttonText)
+
+            button.set(child: buttonContent)
+
+            // Dimensões
             button.setHexpand(expand: true)
-            button.setSizeRequest(width: 200, height: 100)
+            button.setSizeRequest(
+                width: 200,
+                height: 120
+            )
 
-            // Associar classe CSS
-            let cssClass = cssClasses[index]
-
-            cssClass.withCString { name in
+            // Cor individual
+            cssClasses[index].withCString { name in
                 button.add(cssClass: name)
             }
 
-            // Aplicar provedor CSS ao botão
+            // Aplicar CSS
             if let context = button.getStyleContext() {
                 context.add(
                     provider: cssProvider,
@@ -109,14 +215,26 @@ let status = Application.run(startupHandler: nil) { app in
                 )
             }
 
-            // Ação ao clicar
+            // MARK: - Ação ao clicar
+
             button.onClicked { _ in
 
+                // Atualizar texto
                 message.withCString { text in
                     result.setText(str: text)
                 }
 
-                print("Mensagem selecionada: \(message)")
+                // Atualizar emoji
+                emojis[index].withCString { symbol in
+                    resultEmoji.setText(str: symbol)
+                }
+
+                // Reproduzir a mensagem em voz alta
+                falarMensagem(message)
+
+                print(
+                    "Mensagem selecionada: \(message)"
+                )
             }
 
             row.append(child: button)
@@ -125,15 +243,25 @@ let status = Application.run(startupHandler: nil) { app in
         buttonGrid.append(child: row)
     }
 
-    // Adicionar os botões à janela
+    // Adicionar botões
     layout.append(child: buttonGrid)
 
-    // Exibir mensagem selecionada
-    layout.append(child: result)
+    // Adicionar cartão de comunicação
+    layout.append(child: resultCard)
+
+    // Aplicar CSS ao cartão
+    if let context = resultCard.getStyleContext() {
+        context.add(
+            provider: cssProvider,
+            priority: 800
+        )
+    }
 
     // Mostrar janela
     window.set(child: layout)
     window.set(visible: true)
 }
 
-print("Talkcolor encerrado com status: \(String(describing: status))")
+print(
+    "Talkcolor encerrado com status: \(String(describing: status))"
+)

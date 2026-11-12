@@ -1,35 +1,108 @@
+
+/* ==========================================
+   TALKCOLOR — Minha voz, minhas cores
+   ========================================== */
+
+/* Botões principais */
+
+button.fome,
+button.sede,
+button.banheiro,
+button.ajuda {
+    border-radius: 18px;
+    border: 2px solid transparent;
+    padding: 16px;
+    color: #30243F;
+    font-weight: bold;
+    transition: background-color 180ms ease;
+}
+
+/* 🍎 Alimentação */
+
 button.fome {
     background: #FFE0C2;
-    color: #30243F;
-    border-radius: 18px;
-    font-size: 18px;
-    font-weight: bold;
 }
+
+/* 💧 Sede */
 
 button.sede {
     background: #D6ECFF;
-    color: #30243F;
-    border-radius: 18px;
-    font-size: 18px;
-    font-weight: bold;
 }
+
+/* 🚻 Banheiro */
 
 button.banheiro {
     background: #E8D8FA;
-    color: #30243F;
-    border-radius: 18px;
-    font-size: 18px;
-    font-weight: bold;
 }
+
+/* ❤️ Ajuda */
 
 button.ajuda {
     background: #FFD7DD;
+}
+
+/* Emojis dos botões */
+
+button .talkcolor-emoji {
+    font-size: 38px;
+    font-weight: normal;
+}
+
+/* Texto dos botões */
+
+button .talkcolor-button-text {
+    font-size: 17px;
+    font-weight: bold;
     color: #30243F;
-    border-radius: 18px;
-    font-size: 18px;
+}
+
+/* Efeitos de interação */
+
+button.fome:hover,
+button.sede:hover,
+button.banheiro:hover,
+button.ajuda:hover {
+    border-color: #8B5CF6;
+}
+
+button:focus-visible {
+    outline: 3px solid #7043B4;
+    outline-offset: 2px;
+}
+
+button:active {
+    border-color: #7043B4;
+}
+
+/* ==========================================
+   CARTÃO DE COMUNICAÇÃO
+   ========================================== */
+
+.talkcolor-result-card {
+    background: #FFFFFF;
+    border-radius: 20px;
+    padding: 22px;
+    margin-top: 12px;
+}
+
+/* Título do cartão */
+
+.talkcolor-result-heading {
+    color: #786B88;
+    font-size: 12px;
     font-weight: bold;
 }
 
-button:hover {
-    opacity: 0.9;
+/* Emoji da mensagem selecionada */
+
+.talkcolor-result-emoji {
+    font-size: 48px;
+}
+
+/* Texto da mensagem selecionada */
+
+.talkcolor-result-text {
+    color: #30243F;
+    font-size: 24px;
+    font-weight: bold;
 }
