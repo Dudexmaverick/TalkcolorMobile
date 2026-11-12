@@ -1,23 +1,65 @@
+
 import Gtk
 
 let status = Application.run(startupHandler: nil) { app in
+
+    // Janela principal
     let window = ApplicationWindowRef(application: app)
-
     window.title = "Talkcolor — Minha voz, minhas cores"
-    window.setDefaultSize(width: 600, height: 450)
+    window.setDefaultSize(width: 600, height: 500)
 
-    let label = LabelRef(
-        str: "💜 Bem-vinda ao Talkcolor!"
+    // Organização vertical
+    let layout = BoxRef(
+        orientation: .vertical,
+        spacing: 12
     )
 
-    window.set(child: label)
+    
+
+    // Cabeçalho
+    let title = LabelRef(str: "💜 TALKCOLOR")
+    layout.append(child: title)
+
+    let subtitle = LabelRef(
+        str: "Minha voz, minhas cores"
+    )
+    layout.append(child: subtitle)
+
+    let instruction = LabelRef(
+        str: "O que você precisa comunicar?"
+    )
+    layout.append(child: instruction)
+
+    // Mensagem exibida ao selecionar um botão
+    let result = LabelRef(
+        str: "Escolha uma mensagem"
+    )
+
+    // Botões de comunicação
+    let messages: [(String, String)] = [
+        ("🍎 Estou com fome", "Estou com fome"),
+        ("💧 Estou com sede", "Estou com sede"),
+        ("🚻 Ir ao banheiro", "Preciso ir ao banheiro"),
+        ("❤️ Preciso de ajuda", "Preciso de ajuda")
+    ]
+
+    for (buttonTitle, message) in messages {
+
+        let button = ButtonRef(label: buttonTitle)
+
+        button.onClicked { _ in
+            result.set(name: message)
+            print("Mensagem selecionada: \(message)")
+        }
+
+        layout.append(child: button)
+    }
+
+    // Exibir resultado
+    layout.append(child: result)
+
+    window.set(child: layout)
     window.set(visible: true)
 }
 
-guard let status = status else {
-    fatalError("Não foi possível iniciar o Talkcolor.")
-}
-
-guard status == 0 else {
-    fatalError("O Talkcolor terminou com erro: \(status)")
-}
+print("Talkcolor encerrado com status: \(String(describing: status))")
